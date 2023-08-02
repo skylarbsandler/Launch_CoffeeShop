@@ -109,7 +109,7 @@ namespace CoffeeShopMVC.Migrations
                     b.HasOne("CoffeeShopMVC.Models.Order", "Order")
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
-                        .HasConstraintName("fk_items_order_order_id");
+                        .HasConstraintName("fk_items_orders_order_id");
 
                     b.Navigation("Order");
                 });
@@ -128,19 +128,7 @@ namespace CoffeeShopMVC.Migrations
 
             modelBuilder.Entity("CoffeeShopMVC.Models.Customer", b =>
                 {
-                    b.HasOne("CoffeeShopMVC.Model.Item", null)
-                        .WithMany()
-                        .HasForeignKey("ItemsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_item_order_items_items_id");
-
-                    b.HasOne("CoffeeShopMVC.Models.Order", null)
-                        .WithMany()
-                        .HasForeignKey("OrdersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_item_order_orders_orders_id");
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("CoffeeShopMVC.Models.Order", b =>

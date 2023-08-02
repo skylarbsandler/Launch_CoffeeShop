@@ -7,13 +7,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CoffeeShopMVC.Migrations
 {
     /// <inheritdoc />
-    public partial class RebuildDb : Migration
+    public partial class CreateDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "customer",
+                name: "customers",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -23,11 +23,11 @@ namespace CoffeeShopMVC.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_customer", x => x.id);
+                    table.PrimaryKey("pk_customers", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "order",
+                name: "orders",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -37,11 +37,11 @@ namespace CoffeeShopMVC.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_order", x => x.id);
+                    table.PrimaryKey("pk_orders", x => x.id);
                     table.ForeignKey(
-                        name: "fk_order_customer_customer_id",
+                        name: "fk_orders_customers_customer_id",
                         column: x => x.customer_id,
-                        principalTable: "customer",
+                        principalTable: "customers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -60,9 +60,9 @@ namespace CoffeeShopMVC.Migrations
                 {
                     table.PrimaryKey("pk_items", x => x.id);
                     table.ForeignKey(
-                        name: "fk_items_order_order_id",
+                        name: "fk_items_orders_order_id",
                         column: x => x.order_id,
-                        principalTable: "order",
+                        principalTable: "orders",
                         principalColumn: "id");
                 });
 
@@ -72,8 +72,8 @@ namespace CoffeeShopMVC.Migrations
                 column: "order_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_order_customer_id",
-                table: "order",
+                name: "ix_orders_customer_id",
+                table: "orders",
                 column: "customer_id");
         }
 
@@ -84,10 +84,10 @@ namespace CoffeeShopMVC.Migrations
                 name: "items");
 
             migrationBuilder.DropTable(
-                name: "order");
+                name: "orders");
 
             migrationBuilder.DropTable(
-                name: "customer");
+                name: "customers");
         }
     }
 }
