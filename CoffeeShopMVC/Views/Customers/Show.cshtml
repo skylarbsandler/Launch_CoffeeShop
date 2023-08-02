@@ -1,0 +1,24 @@
+﻿@model CoffeeShopMVC.Models.Customer
+
+<h1>Customer Details</h1>
+
+<p>Name: @Model.Name, Total Dollars Spent: @((Model.TotalDollarsSpent() / 100m).ToString("C2")) </p>
+
+@if (Model.Orders.Any() != false)
+{
+    foreach (var order in Model.Orders)
+        {
+            foreach (var item in order.Items)
+            {
+                <div>
+                    <p>
+                    Item Name: @item.Name, Price: @((item.PriceInCents / 100m).ToString("C2"))
+                    </p>
+                </div>
+            }
+        }
+}
+else
+{
+    <p>No orders</p>
+}
