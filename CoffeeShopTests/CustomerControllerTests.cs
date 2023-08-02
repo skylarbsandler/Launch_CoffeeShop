@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using CoffeeShopMVC.FeatureTests;
 using CoffeeShopMVC.DataAccess;
 using CoffeeShopMVC.Models;
+using CoffeeShopMVC.Model;
+using System.Net;
 
 namespace CoffeeShopTests.FeatureTests
 {
@@ -50,6 +52,45 @@ namespace CoffeeShopTests.FeatureTests
             Assert.Contains("Yeff", html);
             Assert.Contains("yeff@mail.com", html);
             Assert.Contains("jeff@mail.com", html);
+        }
+        
+        [Fact]
+        public async Task _Test_New_ReturnsViewWithForm()
+        {
+            var context = GetDbContext();
+            var client = _factory.CreateClient();
+
+            var response = await client.GetAsync($"/customers/new");
+            var html = await response.Content.ReadAsStringAsync();
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains($"<form method=\"post\" action=\"/customers\">", html);
+        }
+
+        [Fact]
+        public async void Test_Create_AddsItemToDatabase()
+        {
+            var context = GetDbContext();
+            var client = _factory.CreateClient();
+
+            context.Customers.Add(new Customer { Name = "Jeff", EmailAddress = "jeff@mail.com" });
+            context.SaveChanges();
+
+            var formData = new Dictionary<string, string>
+            {
+                { "Name", "Jeff" },
+                { "EmailAddress", "jeff@mail.com" }
+            };
+
+            var response = await client.PostAsync("/customers", new FormUrlEncodedContent(formData));
+            var html = await response.Content.ReadAsStringAsync();
+
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains("Jeff", html);
+
+            Assert.Equal(2, context.Customers.Count());
+            Assert.Equal("Jeff", context.Customers.First().Name);
         }
     }
 }
